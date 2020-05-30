@@ -28,7 +28,7 @@ NSString *const CLOSED = @"CLOSED";
     [[TwilioVideoManager getInstance] publishEvent: OPENED];
     [self.navigationController setNavigationBarHidden:YES animated:NO];
     
-    [self logMessage:[NSString stringWithFormat:@"TwilioVideo v%@", [TwilioVideo version]]];
+    [self logMessage:[NSString stringWithFormat:@"TwilioVideo v%ld", (long)[TwilioVideoSDK version]]];
     
     // Configure access token for testing. Create one manually in the console
     // at https://www.twilio.com/console/video/runtime/testing-tools
@@ -116,15 +116,20 @@ NSString *const CLOSED = @"CLOSED";
 - (void)startPreview {
     // TVICameraCapturer is not supported with the Simulator.
     if ([self isSimulator]) {
+        [self logMessage:@"Preview view does not work in Simulator"];
         [self.previewView removeFromSuperview];
         return;
     }
     
-    self.camera = [[TVICameraCapturer alloc] initWithSource:TVICameraCaptureSourceFrontCamera delegate:self];
-    self.localVideoTrack = [TVILocalVideoTrack trackWithCapturer:self.camera
-                                                         enabled:YES
-                                                     constraints:nil
-                                                            name:@"Camera"];
+    self.cameraSource = [[TVICameraSource alloc] initWithDelegate:nil];
+    self.frontCamera = [TVICameraSource captureDeviceForPosition:AVCaptureDevicePositionFront];
+    self.backCamera = [TVICameraSource captureDeviceForPosition:AVCaptureDevicePositionBack];
+    
+    [self.cameraSource startCaptureWithDevice:self.frontCamera completion:^(AVCaptureDevice * _Nonnull device, TVIVideoFormat * _Nonnull format, NSError * _Nullable error) {
+        [self cameraCaptureDidStartWithDevice:device];
+    }];
+    
+    self.localVideoTrack = [TVILocalVideoTrack trackWithSource:self.cameraSource enabled:YES name:@"Camera"];
     if (!self.localVideoTrack) {
         [self logMessage:@"Failed to add video track"];
     } else {
@@ -143,10 +148,14 @@ NSString *const CLOSED = @"CLOSED";
 }
 
 - (void)flipCamera {
-    if (self.camera.source == TVICameraCaptureSourceFrontCamera) {
-        [self.camera selectSource:TVICameraCaptureSourceBackCameraWide];
+    if (self.cameraSource.device == self.frontCamera) {
+        [self.cameraSource selectCaptureDevice:self.backCamera completion:^(AVCaptureDevice * _Nonnull device, TVIVideoFormat * _Nonnull format, NSError * _Nullable error) {
+            [self cameraCaptureDidStartWithDevice:device];
+        }];
     } else {
-        [self.camera selectSource:TVICameraCaptureSourceFrontCamera];
+        [self.cameraSource selectCaptureDevice:self.frontCamera completion:^(AVCaptureDevice * _Nonnull device, TVIVideoFormat * _Nonnull format, NSError * _Nullable error) {
+            [self cameraCaptureDidStartWithDevice:device];
+        }];
     }
 }
 
@@ -189,7 +198,7 @@ NSString *const CLOSED = @"CLOSED";
                                                                       }];
     
     // Connect to the Room using the options we provided.
-    self.room = [TwilioVideo connectWithOptions:connectOptions delegate:self];
+    self.room = [TwilioVideoSDK connectWithOptions:connectOptions delegate:self];
     
     [self logMessage:@"Attempting to connect to room"];
 }
@@ -498,10 +507,8 @@ NSString *const CLOSED = @"CLOSED";
     [self.view setNeedsLayout];
 }
 
-#pragma mark - TVICameraCapturerDelegate
-
-- (void)cameraCapturer:(TVICameraCapturer *)capturer didStartWithSource:(TVICameraCaptureSource)source {
-    self.previewView.mirror = (source == TVICameraCaptureSourceFrontCamera);
+- (void)cameraCaptureDidStartWithDevice:(AVCaptureDevice*)device {
+    self.previewView.mirror = (device == self.frontCamera);
 }
 
 @end
