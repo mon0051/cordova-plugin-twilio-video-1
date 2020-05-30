@@ -9,20 +9,32 @@
 #define HANG_UP_IN_APP                      @"hangUpInApp"
 
 @implementation TwilioVideoConfig
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        self.i18nConnectionError = @"It was not possible to join the room";
+        self.i18nDisconnectedWithError = @"Disconnected";
+        self.i18nAccept = @"Accept";
+    }
+    return self;
+}
+
 -(void) parse:(NSDictionary*)config {
-    if (config == NULL || config == (id)[NSNull null]) { return; }
+    if (config == nil || config == (id)[NSNull null]) { return; }
     self.primaryColorHex = [config objectForKey:PRIMARY_COLOR_PROP];
     self.secondaryColorHex = [config objectForKey:SECONDARY_COLOR_PROP];
     self.i18nConnectionError = [config objectForKey:i18n_CONNECTION_ERROR_PROP];
-    if (self.i18nConnectionError == NULL) {
+    if (self.i18nConnectionError == nil) {
         self.i18nConnectionError = @"It was not possible to join the room";
     }
     self.i18nDisconnectedWithError = [config objectForKey:i18n_DISCONNECTED_WITH_ERROR_PROP];
-    if (self.i18nDisconnectedWithError == NULL) {
+    if (self.i18nDisconnectedWithError == nil) {
         self.i18nDisconnectedWithError = @"Disconnected";
     }
     self.i18nAccept = [config objectForKey:i18n_ACCEPT_PROP];
-    if (self.i18nAccept == NULL) {
+    if (self.i18nAccept == nil) {
         self.i18nAccept = @"Accept";
     }
     self.handleErrorInApp = [config objectForKey:HANDLE_ERROR_IN_APP];
