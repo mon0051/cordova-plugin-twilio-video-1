@@ -56,6 +56,15 @@ NSString *const CLOSED = @"CLOSED";
         self.videoButton.backgroundColor = [TwilioVideoConfig colorFromHexString:secondaryColor];
         self.cameraSwitchButton.backgroundColor = [TwilioVideoConfig colorFromHexString:secondaryColor];
     }
+    
+    self.callTimeLabel.layer.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.5].CGColor;
+    self.callTimeLabel.layer.shadowRadius = 4.0f;
+    self.callTimeLabel.layer.shadowOffset = CGSizeMake(0, 2);
+    
+    self.gradientLayer = [CAGradientLayer layer];
+    self.gradientLayer.frame = self.gradientView.bounds;
+    self.gradientLayer.colors = [NSArray arrayWithObjects:(id)[[UIColor whiteColor] colorWithAlphaComponent:0.0].CGColor, (id) [[UIColor blackColor] colorWithAlphaComponent:0.4].CGColor, nil];
+    [self.gradientView.layer addSublayer:self.gradientLayer];
 }
 
 #pragma mark - Public
@@ -125,10 +134,6 @@ NSString *const CLOSED = @"CLOSED";
     self.frontCamera = [TVICameraSource captureDeviceForPosition:AVCaptureDevicePositionFront];
     self.backCamera = [TVICameraSource captureDeviceForPosition:AVCaptureDevicePositionBack];
     
-    [self.cameraSource startCaptureWithDevice:self.frontCamera completion:^(AVCaptureDevice * _Nonnull device, TVIVideoFormat * _Nonnull format, NSError * _Nullable error) {
-        [self cameraCaptureDidStartWithDevice:device];
-    }];
-    
     self.localVideoTrack = [TVILocalVideoTrack trackWithSource:self.cameraSource enabled:YES name:@"Camera"];
     if (!self.localVideoTrack) {
         [self logMessage:@"Failed to add video track"];
@@ -145,6 +150,10 @@ NSString *const CLOSED = @"CLOSED";
         self.cameraSwitchButton.hidden = NO;
         [self.previewView addGestureRecognizer:tap];
     }
+    
+    [self.cameraSource startCaptureWithDevice:self.frontCamera completion:^(AVCaptureDevice * _Nonnull device, TVIVideoFormat * _Nonnull format, NSError * _Nullable error) {
+        [self cameraCaptureDidStartWithDevice:device];
+    }];
 }
 
 - (void)flipCamera {
@@ -295,6 +304,7 @@ NSString *const CLOSED = @"CLOSED";
 }
 
 - (void) dismiss {
+    [self.cameraSource stopCapture];
     [[TwilioVideoManager getInstance] publishEvent: CLOSED];
     [self dismissViewControllerAnimated:NO completion:nil];
 }
