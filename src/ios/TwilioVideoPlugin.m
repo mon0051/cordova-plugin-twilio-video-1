@@ -14,10 +14,7 @@
     NSArray *args = command.arguments;
     NSString* token = args[0];
     NSString* room = args[1];
-    TwilioVideoConfig *config = [[TwilioVideoConfig alloc] init];
-    if ([args count] > 2) {
-        [config parse: command.arguments[2]];
-    }
+    TwilioVideoConfig *config = [TwilioVideoConfig configFromDict:command.arguments[2]];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         UIStoryboard *sb = [UIStoryboard storyboardWithName:@"TwilioVideo" bundle:nil];

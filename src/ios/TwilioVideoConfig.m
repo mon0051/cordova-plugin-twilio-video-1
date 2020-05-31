@@ -5,40 +5,39 @@
 #define i18n_CONNECTION_ERROR_PROP          @"i18nConnectionError"
 #define i18n_DISCONNECTED_WITH_ERROR_PROP   @"i18nDisconnectedWithError"
 #define i18n_ACCEPT_PROP                    @"i18nAccept"
+#define i18n_CALL_TITLE_PROP                @"i18nCallTitle"
+#define i18n_CALL_DURATION_PROP             @"i18nCallDuration"
 #define HANDLE_ERROR_IN_APP                 @"handleErrorInApp"
 #define HANG_UP_IN_APP                      @"hangUpInApp"
 
 @implementation TwilioVideoConfig
 
-- (instancetype)init
-{
-    self = [super init];
-    if (self) {
-        self.i18nConnectionError = @"It was not possible to join the room";
-        self.i18nDisconnectedWithError = @"Disconnected";
-        self.i18nAccept = @"Accept";
-    }
-    return self;
++ (instancetype)configFromDict:(NSDictionary *)dict {
+    TwilioVideoConfig *config = [[TwilioVideoConfig alloc] init];
+    [config parse:dict];
+    return config;
 }
 
 -(void) parse:(NSDictionary*)config {
-    if (config == nil || config == (id)[NSNull null]) { return; }
-    self.primaryColorHex = [config objectForKey:PRIMARY_COLOR_PROP];
-    self.secondaryColorHex = [config objectForKey:SECONDARY_COLOR_PROP];
-    self.i18nConnectionError = [config objectForKey:i18n_CONNECTION_ERROR_PROP];
-    if (self.i18nConnectionError == nil) {
-        self.i18nConnectionError = @"It was not possible to join the room";
+    self.primaryColorHex = [self objectInConfig:config forKey:PRIMARY_COLOR_PROP defaultValue:nil];
+    self.secondaryColorHex = [self objectInConfig:config forKey:SECONDARY_COLOR_PROP defaultValue:nil];
+    self.i18nConnectionError = [self objectInConfig:config forKey:i18n_CONNECTION_ERROR_PROP defaultValue:@"It was not possible to join the room"];
+    self.i18nDisconnectedWithError = [self objectInConfig:config forKey:i18n_DISCONNECTED_WITH_ERROR_PROP defaultValue:@"Disconnected"];
+    self.i18nAccept = [self objectInConfig:config forKey:i18n_ACCEPT_PROP defaultValue:@"Accept"];
+    self.i18nCallTitle = [self objectInConfig:config forKey:i18n_CALL_TITLE_PROP defaultValue:@"Set Duration"];
+    self.i18nCallDuration = [self objectInConfig:config forKey:i18n_CALL_DURATION_PROP defaultValue:@"00:15 min"];
+    self.handleErrorInApp = [self objectInConfig:config forKey:HANDLE_ERROR_IN_APP defaultValue:nil];
+    self.hangUpInApp = [self objectInConfig:config forKey:HANG_UP_IN_APP defaultValue:nil];
+}
+
+- (NSString*) objectInConfig:(NSDictionary*)config forKey:(NSString*)key defaultValue:(NSString*)defaultValue {
+    if (config == nil || config == (id)[NSNull null]) return defaultValue;
+    NSString* value = [config objectForKey:key];
+    if (value == nil) {
+        return defaultValue;
+    } else {
+        return value;
     }
-    self.i18nDisconnectedWithError = [config objectForKey:i18n_DISCONNECTED_WITH_ERROR_PROP];
-    if (self.i18nDisconnectedWithError == nil) {
-        self.i18nDisconnectedWithError = @"Disconnected";
-    }
-    self.i18nAccept = [config objectForKey:i18n_ACCEPT_PROP];
-    if (self.i18nAccept == nil) {
-        self.i18nAccept = @"Accept";
-    }
-    self.handleErrorInApp = [config objectForKey:HANDLE_ERROR_IN_APP];
-    self.hangUpInApp = [config objectForKey:HANG_UP_IN_APP];
 }
 
 + (UIColor *)colorFromHexString:(NSString *)hexString {

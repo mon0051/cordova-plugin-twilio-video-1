@@ -6,9 +6,11 @@
 @property NSString *i18nConnectionError;
 @property NSString *i18nDisconnectedWithError;
 @property NSString *i18nAccept;
+@property NSString *i18nCallTitle;
+@property NSString *i18nCallDuration;
 @property BOOL handleErrorInApp;
 @property BOOL hangUpInApp;
 
--(void) parse:(NSDictionary*)config;
++ (instancetype) configFromDict:(NSDictionary*)dict;
 + (UIColor *)colorFromHexString:(NSString *)hexString;
 @end
