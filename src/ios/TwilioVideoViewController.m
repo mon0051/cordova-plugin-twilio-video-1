@@ -57,14 +57,24 @@ NSString *const CLOSED = @"CLOSED";
         self.cameraSwitchButton.backgroundColor = [TwilioVideoConfig colorFromHexString:secondaryColor];
     }
     
-    self.callTimeLabel.layer.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.5].CGColor;
-    self.callTimeLabel.layer.shadowRadius = 4.0f;
-    self.callTimeLabel.layer.shadowOffset = CGSizeMake(0, 2);
+    self.callTitleLabel.text = [self.config i18nCallTitle];
+    self.callDurationLabel.text = [self.config i18nCallDuration];
     
-    self.gradientLayer = [CAGradientLayer layer];
-    self.gradientLayer.frame = self.gradientView.bounds;
-    self.gradientLayer.colors = [NSArray arrayWithObjects:(id)[[UIColor whiteColor] colorWithAlphaComponent:0.0].CGColor, (id) [[UIColor blackColor] colorWithAlphaComponent:0.4].CGColor, nil];
-    [self.gradientView.layer addSublayer:self.gradientLayer];
+    [self setShadowForLabel:self.callTimeLabel];
+    [self setShadowForLabel:self.callDurationLabel];
+    [self setShadowForLabel:self.callTitleLabel];
+
+    [self setGradientForView:self.topGradientView colors:[NSArray arrayWithObjects: (id) [[UIColor blackColor] colorWithAlphaComponent:1.0].CGColor, (id)[[UIColor whiteColor] colorWithAlphaComponent:0.0].CGColor, nil]];
+    [self setGradientForView:self.bottomGradientView colors:[NSArray arrayWithObjects:(id)[[UIColor whiteColor] colorWithAlphaComponent:0.0].CGColor, (id) [[UIColor blackColor] colorWithAlphaComponent:1.0].CGColor, nil]];
+    self.topGradientView.alpha = 0.8f;
+    self.bottomGradientView.alpha = 0.8f;
+    
+    [self startDurationTimer];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [self.callDurationTimer invalidate];
 }
 
 #pragma mark - Public
@@ -114,6 +124,52 @@ NSString *const CLOSED = @"CLOSED";
 }
 
 #pragma mark - Private
+
+- (void) setShadowForLabel:(UILabel*)label {
+    label.layer.shadowColor = [UIColor blackColor].CGColor;
+    label.layer.shadowOpacity = 0.5f;
+    label.layer.shadowRadius = 4.0f;
+    label.layer.shadowOffset = CGSizeMake(0, 2);
+}
+
+- (void) setGradientForView:(UIView*)view colors:(NSArray*)colors {
+    CAGradientLayer* gradientLayer = [CAGradientLayer layer];
+    gradientLayer.frame = view.bounds;
+    gradientLayer.colors = colors;
+    [view.layer addSublayer: gradientLayer];
+}
+
+- (void) startDurationTimer {
+    self.callDurationTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:YES block:^(NSTimer * _Nonnull timer) {
+        int minutes = self.currentCallDuration / 60;
+        int seconds = self.currentCallDuration - minutes * 60.0;
+        NSString *durationText = [NSString stringWithFormat:@"%02d:%02d", minutes, seconds];
+        self.callTimeLabel.text = durationText;
+        
+        self.currentCallDuration++;
+    }];
+}
+
+- (IBAction)toggleControlsVisibility:(id)sender {
+    CGFloat alpha = 1.0f;
+    CGFloat gradientAlpha = 0.8f;
+    if (self.callTitleLabel.alpha == 1.0f) {
+        alpha = 0.0f;
+        gradientAlpha = 0.0f;
+    }
+    
+    [UIView animateWithDuration:0.450 animations:^{
+        self.callTitleLabel.alpha = alpha;
+        self.callDurationLabel.alpha = alpha;
+        self.callTimeLabel.alpha = alpha;
+        self.disconnectButton.alpha = alpha;
+        self.micButton.alpha = alpha;
+        self.videoButton.alpha = alpha;
+    
+        self.topGradientView.alpha = gradientAlpha;
+        self.bottomGradientView.alpha = gradientAlpha;
+    }];
+}
 
 - (BOOL)isSimulator {
 #if TARGET_IPHONE_SIMULATOR

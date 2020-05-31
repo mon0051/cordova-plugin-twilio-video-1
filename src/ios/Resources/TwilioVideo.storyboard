@@ -19,10 +19,38 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bab-gz-Vdx" userLabel="GradientView">
-                                <rect key="frame" x="0.0" y="444.5" width="375" height="222.5"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bab-gz-Vdx" userLabel="BottomGradientView">
+                                <rect key="frame" x="0.0" y="446.5" width="375" height="220.5"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4jH-x8-QdV" userLabel="TopGradientView">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="120"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="120" id="o0S-We-ZtZ"/>
+                                </constraints>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hGG-dY-WCN">
+                                <rect key="frame" x="157" y="466.5" width="61" height="26.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="22"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                                <size key="shadowOffset" width="0.0" height="0.0"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Set Duration" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v0r-jG-Ba0">
+                                <rect key="frame" x="142" y="20" width="91" height="19.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                                <size key="shadowOffset" width="0.0" height="0.0"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:39 min" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="l4T-lx-dok">
+                                <rect key="frame" x="147.5" y="40.5" width="80" height="19.5"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="16"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                                <size key="shadowOffset" width="0.0" height="0.0"/>
+                            </label>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7bK-Tc-zw5" userLabel="Video button">
                                 <rect key="frame" x="252.5" y="525" width="70" height="70"/>
                                 <color key="backgroundColor" white="1" alpha="0.5" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -80,15 +108,15 @@
                                 </connections>
                             </button>
                             <view contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="hJ3-NM-pz1" customClass="TVIVideoView">
-                                <rect key="frame" x="239" y="20" width="120" height="160"/>
+                                <rect key="frame" x="259" y="20" width="100" height="180"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="120" id="ece-aE-s5Y"/>
-                                    <constraint firstAttribute="height" constant="160" id="rjh-xD-90u"/>
+                                    <constraint firstAttribute="width" constant="100" id="ece-aE-s5Y"/>
+                                    <constraint firstAttribute="height" constant="180" id="rjh-xD-90u"/>
                                 </constraints>
                             </view>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XKU-af-eTc" userLabel="Camera switch Button">
-                                <rect key="frame" x="239" y="20" width="120" height="160"/>
+                                <rect key="frame" x="259" y="20" width="100" height="180"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -101,21 +129,18 @@
                                     <action selector="cameraSwitchButtonPressed:" destination="jSN-F6-Q4K" eventType="touchUpInside" id="vyj-2G-Rbc"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hGG-dY-WCN">
-                                <rect key="frame" x="157" y="464.5" width="61" height="28.5"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="22"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                                <color key="shadowColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <size key="shadowOffset" width="0.0" height="2"/>
-                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.93333333333333335" green="0.93333333333333335" blue="0.93333333333333335" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="bab-gz-Vdx" firstAttribute="leading" secondItem="3Bh-pO-6uY" secondAttribute="leading" id="2fv-Tz-CyO"/>
                             <constraint firstItem="tZu-uw-hgi" firstAttribute="top" secondItem="krA-sT-Z3g" secondAttribute="bottom" constant="72" id="5me-9v-giJ"/>
                             <constraint firstItem="XKU-af-eTc" firstAttribute="top" secondItem="hJ3-NM-pz1" secondAttribute="top" id="8hp-YW-65M"/>
+                            <constraint firstAttribute="trailing" secondItem="4jH-x8-QdV" secondAttribute="trailing" id="9hU-76-xL0"/>
                             <constraint firstItem="XKU-af-eTc" firstAttribute="leading" secondItem="hJ3-NM-pz1" secondAttribute="leading" id="B57-vN-TDn"/>
+                            <constraint firstItem="v0r-jG-Ba0" firstAttribute="centerX" secondItem="3Bh-pO-6uY" secondAttribute="centerX" id="CMg-2m-unM"/>
+                            <constraint firstAttribute="bottom" secondItem="4jH-x8-QdV" secondAttribute="bottom" constant="547" id="D6Z-58-oGi"/>
+                            <constraint firstItem="4jH-x8-QdV" firstAttribute="leading" secondItem="3Bh-pO-6uY" secondAttribute="leading" id="FAK-vD-iP1"/>
                             <constraint firstAttribute="trailing" secondItem="hJ3-NM-pz1" secondAttribute="trailing" constant="16" id="FDR-pT-IT1"/>
                             <constraint firstItem="XKU-af-eTc" firstAttribute="trailing" secondItem="hJ3-NM-pz1" secondAttribute="trailing" id="L1e-Sg-l3R"/>
                             <constraint firstItem="rwp-9E-VzS" firstAttribute="bottom" secondItem="krA-sT-Z3g" secondAttribute="bottom" id="V8w-r3-kvO"/>
@@ -124,25 +149,39 @@
                             <constraint firstAttribute="trailing" secondItem="bab-gz-Vdx" secondAttribute="trailing" id="baZ-nK-GYu"/>
                             <constraint firstItem="bab-gz-Vdx" firstAttribute="top" secondItem="hGG-dY-WCN" secondAttribute="top" constant="-20" id="dte-fV-GPx"/>
                             <constraint firstItem="7bK-Tc-zw5" firstAttribute="bottom" secondItem="krA-sT-Z3g" secondAttribute="bottom" id="fdZ-tJ-8z1"/>
+                            <constraint firstItem="v0r-jG-Ba0" firstAttribute="top" secondItem="8oD-ke-cGW" secondAttribute="bottom" constant="20" id="j9U-o3-dGa"/>
                             <constraint firstItem="krA-sT-Z3g" firstAttribute="top" secondItem="hGG-dY-WCN" secondAttribute="bottom" constant="32" id="jl7-IS-b4N"/>
+                            <constraint firstItem="l4T-lx-dok" firstAttribute="top" secondItem="v0r-jG-Ba0" secondAttribute="bottom" constant="1" id="kcM-So-5EI"/>
+                            <constraint firstItem="l4T-lx-dok" firstAttribute="centerX" secondItem="3Bh-pO-6uY" secondAttribute="centerX" id="ldO-Ii-uK7"/>
                             <constraint firstItem="hGG-dY-WCN" firstAttribute="centerX" secondItem="3Bh-pO-6uY" secondAttribute="centerX" id="o4F-Gm-oz1"/>
                             <constraint firstItem="XKU-af-eTc" firstAttribute="bottom" secondItem="hJ3-NM-pz1" secondAttribute="bottom" id="oxM-GB-a7H"/>
                             <constraint firstItem="7bK-Tc-zw5" firstAttribute="leading" secondItem="krA-sT-Z3g" secondAttribute="trailing" constant="30" id="u41-jb-y3P"/>
                             <constraint firstItem="krA-sT-Z3g" firstAttribute="leading" secondItem="rwp-9E-VzS" secondAttribute="trailing" constant="30" id="yfX-ed-tbl"/>
                             <constraint firstAttribute="bottom" secondItem="bab-gz-Vdx" secondAttribute="bottom" id="yfq-bQ-fdq"/>
                         </constraints>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="yKo-cn-ybv" appends="YES" id="6Fd-q3-CHE"/>
+                        </connections>
                     </view>
                     <connections>
+                        <outlet property="bottomGradientView" destination="bab-gz-Vdx" id="jJL-ST-csK"/>
+                        <outlet property="callDurationLabel" destination="l4T-lx-dok" id="bQ5-G3-N4k"/>
                         <outlet property="callTimeLabel" destination="hGG-dY-WCN" id="hm4-fo-35a"/>
+                        <outlet property="callTitleLabel" destination="v0r-jG-Ba0" id="iYy-f5-fjp"/>
                         <outlet property="cameraSwitchButton" destination="XKU-af-eTc" id="jTc-4v-uIt"/>
                         <outlet property="disconnectButton" destination="krA-sT-Z3g" id="uQu-1U-Ree"/>
-                        <outlet property="gradientView" destination="bab-gz-Vdx" id="Tsx-NL-gxQ"/>
                         <outlet property="micButton" destination="rwp-9E-VzS" id="SW4-po-OHw"/>
                         <outlet property="previewView" destination="hJ3-NM-pz1" id="1kY-rd-tEJ"/>
+                        <outlet property="topGradientView" destination="4jH-x8-QdV" id="d9S-GV-su4"/>
                         <outlet property="videoButton" destination="7bK-Tc-zw5" id="WoD-99-cw1"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JfB-JL-3y4" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="yKo-cn-ybv">
+                    <connections>
+                        <action selector="toggleControlsVisibility:" destination="jSN-F6-Q4K" id="7Cq-IV-oC1"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="322.39999999999998" y="367.46626686656674"/>
         </scene>

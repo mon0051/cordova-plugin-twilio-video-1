@@ -33,9 +33,14 @@
 @property (nonatomic, weak) IBOutlet UILabel *roomLine;
 @property (nonatomic, weak) IBOutlet UIButton *cameraSwitchButton;
 @property (nonatomic, weak) IBOutlet UIButton *videoButton;
-@property (weak, nonatomic) IBOutlet UIView *gradientView;
-@property (nonatomic, strong) CAGradientLayer *gradientLayer;
+@property (weak, nonatomic) IBOutlet UIView *topGradientView;
+@property (weak, nonatomic) IBOutlet UIView *bottomGradientView;
 @property (weak, nonatomic) IBOutlet UILabel *callTimeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *callTitleLabel;
+@property (weak, nonatomic) IBOutlet UILabel *callDurationLabel;
+
+@property (nonatomic, strong) NSTimer *callDurationTimer;
+@property (nonatomic) int currentCallDuration;
 
 - (void)connectToRoom:(NSString*)room token: (NSString *)token;
 
