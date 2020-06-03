@@ -60,9 +60,11 @@ NSString *const CLOSED = @"CLOSED";
     self.callTitleLabel.text = [self.config i18nCallTitle];
     self.callDurationLabel.text = [self.config i18nCallDuration];
     
-    [self setShadowForLabel:self.callTimeLabel];
-    [self setShadowForLabel:self.callDurationLabel];
-    [self setShadowForLabel:self.callTitleLabel];
+    [self setShadowForView:self.callTimeLabel];
+    [self setShadowForView:self.callDurationLabel];
+    [self setShadowForView:self.callTitleLabel];
+    [self setShadowForView:self.bannerView];
+    self.bannerView.layer.cornerRadius = 8.0f;
 
     [self setGradientForView:self.topGradientView colors:[NSArray arrayWithObjects: (id) [[UIColor blackColor] colorWithAlphaComponent:1.0].CGColor, (id)[[UIColor whiteColor] colorWithAlphaComponent:0.0].CGColor, nil]];
     [self setGradientForView:self.bottomGradientView colors:[NSArray arrayWithObjects:(id)[[UIColor whiteColor] colorWithAlphaComponent:0.0].CGColor, (id) [[UIColor blackColor] colorWithAlphaComponent:1.0].CGColor, nil]];
@@ -117,40 +119,10 @@ NSString *const CLOSED = @"CLOSED";
 }
 
 - (IBAction)videoButtonPressed:(id)sender {
-    if(self.localVideoTrack){
-        self.localVideoTrack.enabled = !self.localVideoTrack.isEnabled;
-        [self.videoButton setSelected: !self.localVideoTrack.isEnabled];
-    }
+    [self toggleVideoTrackOn:!self.localVideoTrack.isEnabled];
 }
 
-#pragma mark - Private
-
-- (void) setShadowForLabel:(UILabel*)label {
-    label.layer.shadowColor = [UIColor blackColor].CGColor;
-    label.layer.shadowOpacity = 0.5f;
-    label.layer.shadowRadius = 4.0f;
-    label.layer.shadowOffset = CGSizeMake(0, 2);
-}
-
-- (void) setGradientForView:(UIView*)view colors:(NSArray*)colors {
-    CAGradientLayer* gradientLayer = [CAGradientLayer layer];
-    gradientLayer.frame = view.bounds;
-    gradientLayer.colors = colors;
-    [view.layer addSublayer: gradientLayer];
-}
-
-- (void) startDurationTimer {
-    self.callDurationTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:YES block:^(NSTimer * _Nonnull timer) {
-        int minutes = self.currentCallDuration / 60;
-        int seconds = self.currentCallDuration - minutes * 60.0;
-        NSString *durationText = [NSString stringWithFormat:@"%02d:%02d", minutes, seconds];
-        self.callTimeLabel.text = durationText;
-        
-        self.currentCallDuration++;
-    }];
-}
-
-- (IBAction)toggleControlsVisibility:(id)sender {
+- (IBAction) toggleControlsVisibility:(id)sender {
     CGFloat alpha = 1.0f;
     CGFloat gradientAlpha = 0.8f;
     if (self.callTitleLabel.alpha == 1.0f) {
@@ -171,6 +143,67 @@ NSString *const CLOSED = @"CLOSED";
     }];
 }
 
+- (IBAction)bannerButton1Pressed:(id)sender {
+    [self toggleBanner:NO];
+    [self toggleVideoTrackOn:NO];
+}
+
+
+- (IBAction)bannerButton2Pressed:(id)sender {
+    [self toggleBanner:NO];
+    
+}
+
+
+#pragma mark - Private
+
+- (void) setShadowForView:(UIView*)view {
+    view.layer.shadowColor = [UIColor blackColor].CGColor;
+    view.layer.shadowOpacity = 0.5f;
+    view.layer.shadowRadius = 4.0f;
+    view.layer.shadowOffset = CGSizeMake(0, 2);
+}
+
+- (void) setGradientForView:(UIView*)view colors:(NSArray*)colors {
+    CAGradientLayer* gradientLayer = [CAGradientLayer layer];
+    gradientLayer.frame = view.bounds;
+    gradientLayer.colors = colors;
+    [view.layer addSublayer: gradientLayer];
+}
+
+- (void) startDurationTimer {
+    self.callDurationTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:YES block:^(NSTimer * _Nonnull timer) {
+        int minutes = self.currentCallDuration / 60;
+        int seconds = self.currentCallDuration - minutes * 60.0;
+        NSString *durationText = [NSString stringWithFormat:@"%02d:%02d", minutes, seconds];
+        self.callTimeLabel.text = durationText;
+        
+        self.currentCallDuration++;
+    }];
+}
+
+- (void) toggleBanner:(BOOL)show {
+    if (show) {
+        self.bannerBottomConstraint.constant = -80;
+        self.previewTopConstraint.constant = 94;
+        self.callTitleTopConstraint.constant = 94;
+    } else {
+        self.bannerBottomConstraint.constant = 80;
+        self.previewTopConstraint.constant = 20;
+        self.callTitleTopConstraint.constant = 20;
+    }
+    [UIView animateWithDuration:0.35 animations:^{
+        [self.view layoutIfNeeded];
+    }];
+}
+
+- (void) toggleVideoTrackOn:(BOOL)on {
+    if(self.localVideoTrack){
+        self.localVideoTrack.enabled = on;
+        [self.videoButton setSelected: on];
+    }
+}
+
 - (BOOL)isSimulator {
 #if TARGET_IPHONE_SIMULATOR
     return YES;
@@ -182,7 +215,9 @@ NSString *const CLOSED = @"CLOSED";
     // TVICameraCapturer is not supported with the Simulator.
     if ([self isSimulator]) {
         [self logMessage:@"Preview view does not work in Simulator"];
-        [self.previewView removeFromSuperview];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.previewView removeFromSuperview];
+        });
         return;
     }
     

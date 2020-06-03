@@ -38,6 +38,11 @@
 @property (weak, nonatomic) IBOutlet UILabel *callTimeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *callTitleLabel;
 @property (weak, nonatomic) IBOutlet UILabel *callDurationLabel;
+@property (weak, nonatomic) IBOutlet UIView *bannerView;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bannerBottomConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *callTitleTopConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *previewTopConstraint;
 
 @property (nonatomic, strong) NSTimer *callDurationTimer;
 @property (nonatomic) int currentCallDuration;
