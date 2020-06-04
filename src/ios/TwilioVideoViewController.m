@@ -200,7 +200,7 @@ NSString *const CLOSED = @"CLOSED";
 - (void) toggleVideoTrackOn:(BOOL)on {
     if(self.localVideoTrack){
         self.localVideoTrack.enabled = on;
-        [self.videoButton setSelected: on];
+        [self.videoButton setSelected: !on];
     }
 }
 
@@ -291,11 +291,12 @@ NSString *const CLOSED = @"CLOSED";
     
     TVIConnectOptions *connectOptions = [TVIConnectOptions optionsWithToken:self.accessToken
                                                                       block:^(TVIConnectOptionsBuilder * _Nonnull builder) {
-                                                                          builder.roomName = self.roomName;
-                                                                          // Use the local media that we prepared earlier.
-                                                                          builder.audioTracks = self.localAudioTrack ? @[ self.localAudioTrack ] : @[ ];
-                                                                          builder.videoTracks = self.localVideoTrack ? @[ self.localVideoTrack ] : @[ ];
-                                                                      }];
+        builder.roomName = self.roomName;
+        // Use the local media that we prepared earlier.
+        builder.audioTracks = self.localAudioTrack ? @[ self.localAudioTrack ] : @[ ];
+        builder.videoTracks = self.localVideoTrack ? @[ self.localVideoTrack ] : @[ ];
+        [builder setNetworkQualityEnabled:YES];
+    }];
     
     // Connect to the Room using the options we provided.
     self.room = [TwilioVideoSDK connectWithOptions:connectOptions delegate:self];
@@ -411,6 +412,7 @@ NSString *const CLOSED = @"CLOSED";
 #pragma mark - TVIRoomDelegate
 
 - (void)didConnectToRoom:(TVIRoom *)room {
+    room.localParticipant.delegate = self;
     // At the moment, this example only supports rendering one Participant at a time.
     [self logMessage:[NSString stringWithFormat:@"Connected to room %@ as %@", room.name, room.localParticipant.identity]];
     [[TwilioVideoManager getInstance] publishEvent: CONNECTED];
@@ -610,6 +612,17 @@ NSString *const CLOSED = @"CLOSED";
 
 - (void)cameraCaptureDidStartWithDevice:(AVCaptureDevice*)device {
     self.previewView.mirror = (device == self.frontCamera);
+}
+
+#pragma mark - TVILocalParticipantDelegate
+
+- (void)localParticipant:(nonnull TVILocalParticipant *)participant networkQualityLevelDidChange:(TVINetworkQualityLevel)networkQualityLevel {
+    // networkQuality will always be 0 while reconnecting, so skip
+    if (self.room.state == TVIRoomStateReconnecting) return;
+    [self logMessage:[NSString stringWithFormat:@"Network quality: %ld", (long)networkQualityLevel]];
+    if (networkQualityLevel <= self.config.videoNetworkQualityThreshold) {
+        [self toggleBanner:YES];
+    }
 }
 
 @end

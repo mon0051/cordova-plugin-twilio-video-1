@@ -4,7 +4,7 @@
 #import "TwilioVideoConfig.h"
 #import "TwilioVideoPermissions.h"
 
-@interface TwilioVideoViewController: UIViewController <TVIRemoteParticipantDelegate, TVIRoomDelegate, TVIVideoViewDelegate, TwilioVideoActionProducerDelegate>
+@interface TwilioVideoViewController: UIViewController <TVIRemoteParticipantDelegate, TVIRoomDelegate, TVIVideoViewDelegate, TwilioVideoActionProducerDelegate, TVILocalParticipantDelegate>
 
 // Configure access token manually for testing in `ViewDidLoad`, if desired! Create one manually in the console.
 @property (nonatomic, strong) NSString *roomName;

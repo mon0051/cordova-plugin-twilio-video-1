@@ -10,6 +10,7 @@
 @property NSString *i18nCallDuration;
 @property BOOL handleErrorInApp;
 @property BOOL hangUpInApp;
+@property int videoNetworkQualityThreshold;
 
 + (instancetype) configFromDict:(NSDictionary*)dict;
 + (UIColor *)colorFromHexString:(NSString *)hexString;
