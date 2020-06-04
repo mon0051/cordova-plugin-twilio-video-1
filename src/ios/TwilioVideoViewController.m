@@ -172,6 +172,7 @@ NSString *const CLOSED = @"CLOSED";
 }
 
 - (void) startDurationTimer {
+    self.currentCallDuration = self.config.startCallTimeInSeconds;
     self.callDurationTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:YES block:^(NSTimer * _Nonnull timer) {
         int minutes = self.currentCallDuration / 60;
         int seconds = self.currentCallDuration - minutes * 60.0;

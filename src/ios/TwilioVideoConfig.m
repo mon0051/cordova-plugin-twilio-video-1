@@ -9,6 +9,7 @@
 #define i18n_CALL_DURATION_PROP             @"i18nCallDuration"
 #define HANDLE_ERROR_IN_APP                 @"handleErrorInApp"
 #define HANG_UP_IN_APP                      @"hangUpInApp"
+#define START_CALL_TIME                     @"startCallTimeInSeconds"
 #define VIDEO_NQ_THRESHOLD                  @"videoNetworkQualityThreshold"
 
 @implementation TwilioVideoConfig
@@ -29,6 +30,7 @@
     self.i18nCallDuration = [self stringInConfig:config forKey:i18n_CALL_DURATION_PROP defaultValue:@"00:15 min"];
     self.handleErrorInApp = [self stringInConfig:config forKey:HANDLE_ERROR_IN_APP defaultValue:nil];
     self.hangUpInApp = [self stringInConfig:config forKey:HANG_UP_IN_APP defaultValue:nil];
+    self.startCallTimeInSeconds = [[self numberInConfig:config forKey:START_CALL_TIME defaultValue:[NSNumber numberWithInt:0]] intValue];
     self.videoNetworkQualityThreshold = [[self numberInConfig:config forKey:VIDEO_NQ_THRESHOLD defaultValue:[NSNumber numberWithInt:1]] intValue];
 }
 
