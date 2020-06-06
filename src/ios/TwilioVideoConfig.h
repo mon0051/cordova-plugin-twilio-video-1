@@ -12,6 +12,7 @@
 @property BOOL hangUpInApp;
 @property int startCallTimeInSeconds;
 @property int videoNetworkQualityThreshold;
+@property NSTimeInterval ignoreNQBannerInSeconds;
 
 + (instancetype) configFromDict:(NSDictionary*)dict;
 + (UIColor *)colorFromHexString:(NSString *)hexString;

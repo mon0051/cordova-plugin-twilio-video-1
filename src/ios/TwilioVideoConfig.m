@@ -11,6 +11,7 @@
 #define HANG_UP_IN_APP                      @"hangUpInApp"
 #define START_CALL_TIME                     @"startCallTimeInSeconds"
 #define VIDEO_NQ_THRESHOLD                  @"videoNetworkQualityThreshold"
+#define IGNORE_NQ_BANNER                    @"ignoreNQBannerInSeconds"
 
 @implementation TwilioVideoConfig
 
@@ -32,6 +33,7 @@
     self.hangUpInApp = [self stringInConfig:config forKey:HANG_UP_IN_APP defaultValue:nil];
     self.startCallTimeInSeconds = [[self numberInConfig:config forKey:START_CALL_TIME defaultValue:[NSNumber numberWithInt:0]] intValue];
     self.videoNetworkQualityThreshold = [[self numberInConfig:config forKey:VIDEO_NQ_THRESHOLD defaultValue:[NSNumber numberWithInt:1]] intValue];
+    self.ignoreNQBannerInSeconds = [[self numberInConfig:config forKey:IGNORE_NQ_BANNER defaultValue:[NSNumber numberWithDouble:30.0]] doubleValue];
 }
 
 - (NSString*) stringInConfig:(NSDictionary*)config forKey:(NSString*)key defaultValue:(NSString*)defaultValue {
