@@ -134,14 +134,14 @@
                                 <rect key="frame" x="8" y="-101" width="398" height="65"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="Your network connection is poor" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CRQ-KM-QKn">
-                                        <rect key="frame" x="12" y="12" width="212" height="41"/>
+                                        <rect key="frame" x="12" y="12" width="199" height="41"/>
                                         <fontDescription key="fontDescription" name="MarkPro-Bold" family="Mark Pro" pointSize="16"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                         <size key="shadowOffset" width="0.0" height="0.0"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DIt-bv-Dv4">
-                                        <rect key="frame" x="236" y="10.5" width="78" height="44"/>
+                                        <rect key="frame" x="223" y="10.5" width="78" height="44"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="44" id="x9U-5J-6ha"/>
                                         </constraints>
@@ -154,12 +154,12 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fwx-ab-J1N">
-                                        <rect key="frame" x="326" y="10.5" width="60" height="44"/>
+                                        <rect key="frame" x="313" y="10.5" width="73" height="44"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="44" id="aRe-js-WyS"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" name="MarkPro-Bold" family="Mark Pro" pointSize="16"/>
-                                        <state key="normal" title="Dismiss">
+                                        <state key="normal" title="Reconnet">
                                             <color key="titleColor" red="0.83921568627450982" green="0.21568627450980393" blue="0.3529411764705882" alpha="1" colorSpace="calibratedRGB"/>
                                         </state>
                                         <connections>
@@ -178,6 +178,9 @@
                                     <constraint firstItem="CRQ-KM-QKn" firstAttribute="leading" secondItem="aZr-XQ-0pO" secondAttribute="leading" constant="12" id="lo5-Wh-ggG"/>
                                     <constraint firstAttribute="bottom" secondItem="CRQ-KM-QKn" secondAttribute="bottom" constant="12" id="n6k-vh-bjO"/>
                                 </constraints>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="kGX-7Q-ED0" appends="YES" id="cZZ-hV-Oc7"/>
+                                </connections>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="0.93333333330000001" green="0.93333333330000001" blue="0.93333333330000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -240,6 +243,11 @@
                         <action selector="toggleControlsVisibility:" destination="jSN-F6-Q4K" id="7Cq-IV-oC1"/>
                     </connections>
                 </tapGestureRecognizer>
+                <swipeGestureRecognizer direction="up" id="kGX-7Q-ED0">
+                    <connections>
+                        <action selector="swipeUpOnBanner:" destination="jSN-F6-Q4K" id="BGE-R5-HSV"/>
+                    </connections>
+                </swipeGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="322.39999999999998" y="367.46626686656674"/>
         </scene>

@@ -154,6 +154,9 @@ NSString *const CLOSED = @"CLOSED";
     
 }
 
+- (IBAction)swipeUpOnBanner:(id)sender {
+    [self toggleBanner:NO];
+}
 
 #pragma mark - Private
 
