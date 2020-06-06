@@ -151,7 +151,8 @@ NSString *const CLOSED = @"CLOSED";
 
 - (IBAction)bannerButton2Pressed:(id)sender {
     [self toggleBanner:NO];
-    
+    [self.room disconnect];
+    [self doConnect];
 }
 
 - (IBAction)swipeUpOnBanner:(id)sender {
@@ -187,6 +188,18 @@ NSString *const CLOSED = @"CLOSED";
 }
 
 - (void) toggleBanner:(BOOL)show {
+    if (show) {
+        if (self.lastBannerInteractionDate != nil) {
+            NSTimeInterval timeSinceLastInteraction = -[self.lastBannerInteractionDate timeIntervalSinceNow];
+            if (timeSinceLastInteraction < self.config.ignoreNQBannerInSeconds) {
+                return; // skip this show
+            }
+        }
+    } else {
+        // Hiding the banner, so mark the time so we can ignore next banner show
+        self.lastBannerInteractionDate = [NSDate date];
+    }
+    
     if (show) {
         self.bannerBottomConstraint.constant = -80;
         self.previewTopConstraint.constant = 94;

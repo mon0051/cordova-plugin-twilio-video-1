@@ -46,6 +46,7 @@
 
 @property (nonatomic, strong) NSTimer *callDurationTimer;
 @property (nonatomic) int currentCallDuration;
+@property (nonatomic, strong) NSDate *lastBannerInteractionDate;
 
 - (void)connectToRoom:(NSString*)room token: (NSString *)token;
 
