@@ -33,16 +33,16 @@
 @property (nonatomic, weak) IBOutlet UILabel *roomLine;
 @property (nonatomic, weak) IBOutlet UIButton *cameraSwitchButton;
 @property (nonatomic, weak) IBOutlet UIButton *videoButton;
-@property (weak, nonatomic) IBOutlet UIView *topGradientView;
-@property (weak, nonatomic) IBOutlet UIView *bottomGradientView;
-@property (weak, nonatomic) IBOutlet UILabel *callTimeLabel;
-@property (weak, nonatomic) IBOutlet UILabel *callTitleLabel;
-@property (weak, nonatomic) IBOutlet UILabel *callDurationLabel;
-@property (weak, nonatomic) IBOutlet UIView *bannerView;
+@property (nonatomic, weak) IBOutlet UIView *topGradientView;
+@property (nonatomic, weak) IBOutlet UIView *bottomGradientView;
+@property (nonatomic, weak) IBOutlet UILabel *callTimeLabel;
+@property (nonatomic, weak) IBOutlet UILabel *callTitleLabel;
+@property (nonatomic, weak) IBOutlet UILabel *callDurationLabel;
+@property (nonatomic, weak) IBOutlet UIView *bannerView;
 
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bannerBottomConstraint;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *callTitleTopConstraint;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *previewTopConstraint;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint *bannerBottomConstraint;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint *callTitleTopConstraint;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint *previewTopConstraint;
 
 @property (nonatomic, strong) NSTimer *callDurationTimer;
 @property (nonatomic) int currentCallDuration;

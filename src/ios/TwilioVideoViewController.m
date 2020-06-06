@@ -402,6 +402,19 @@ NSString *const CLOSED = @"CLOSED";
     [self dismissViewControllerAnimated:NO completion:nil];
 }
 
+- (void) updatePreviewViewHeightTo:(CGFloat) height {
+    // LR: Since TVIVideoView gets replaces with another view, we need
+    // to search for the constraints, instead of having a IBOutlet to the
+    // constraint we want in the .storyboard
+    for (NSLayoutConstraint *constraint in self.previewView.constraints) {
+        if (constraint.firstAttribute == NSLayoutAttributeHeight) {
+            constraint.constant = roundf(height);
+            [self.previewView layoutIfNeeded];
+            return;
+        }
+    }
+}
+
 #pragma mark - TVIRoomDelegate
 
 - (void) onDisconnect {
@@ -611,8 +624,11 @@ NSString *const CLOSED = @"CLOSED";
     [self.view setNeedsLayout];
 }
 
-- (void)cameraCaptureDidStartWithDevice:(AVCaptureDevice*)device {
+- (void) cameraCaptureDidStartWithDevice:(AVCaptureDevice*)device {
     self.previewView.mirror = (device == self.frontCamera);
+    CMVideoDimensions dimensions = CMVideoFormatDescriptionGetDimensions(device.activeFormat.formatDescription);
+    CGFloat previewHeight = self.previewView.frame.size.width * dimensions.width / dimensions.height;
+    [self updatePreviewViewHeightTo: previewHeight];
 }
 
 #pragma mark - TVILocalParticipantDelegate
