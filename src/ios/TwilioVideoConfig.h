@@ -13,6 +13,7 @@
 @property int startCallTimeInSeconds;
 @property int videoNetworkQualityThreshold;
 @property NSTimeInterval ignoreNQBannerInSeconds;
+@property BOOL disableNQBanner;
 
 + (instancetype) configFromDict:(NSDictionary*)dict;
 + (UIColor *)colorFromHexString:(NSString *)hexString;

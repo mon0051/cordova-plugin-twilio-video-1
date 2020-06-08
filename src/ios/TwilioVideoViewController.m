@@ -653,7 +653,7 @@ NSString *const CLOSED = @"CLOSED";
     // networkQuality will always be 0 while reconnecting, so skip
     if (self.room.state == TVIRoomStateReconnecting) return;
     [self logMessage:[NSString stringWithFormat:@"Network quality: %ld", (long)networkQualityLevel]];
-    if (networkQualityLevel <= self.config.videoNetworkQualityThreshold) {
+    if (!self.config.disableNQBanner && networkQualityLevel <= self.config.videoNetworkQualityThreshold) {
         [self toggleBanner:YES];
     }
 }
