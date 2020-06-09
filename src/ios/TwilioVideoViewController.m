@@ -28,7 +28,7 @@ NSString *const CLOSED = @"CLOSED";
     [[TwilioVideoManager getInstance] publishEvent: OPENED];
     [self.navigationController setNavigationBarHidden:YES animated:NO];
     
-    [self logMessage:[NSString stringWithFormat:@"TwilioVideo v%@", [TwilioVideo version]]];
+    [self logMessage:[NSString stringWithFormat:@"TwilioVideo v%ld", (long)[TwilioVideoSDK version]]];
     
     // Configure access token for testing. Create one manually in the console
     // at https://www.twilio.com/console/video/runtime/testing-tools
@@ -56,6 +56,27 @@ NSString *const CLOSED = @"CLOSED";
         self.videoButton.backgroundColor = [TwilioVideoConfig colorFromHexString:secondaryColor];
         self.cameraSwitchButton.backgroundColor = [TwilioVideoConfig colorFromHexString:secondaryColor];
     }
+    
+    self.callTitleLabel.text = [self.config i18nCallTitle];
+    self.callDurationLabel.text = [self.config i18nCallDuration];
+    
+    [self setShadowForView:self.callTimeLabel];
+    [self setShadowForView:self.callDurationLabel];
+    [self setShadowForView:self.callTitleLabel];
+    [self setShadowForView:self.bannerView];
+    self.bannerView.layer.cornerRadius = 8.0f;
+
+    [self setGradientForView:self.topGradientView colors:[NSArray arrayWithObjects: (id) [[UIColor blackColor] colorWithAlphaComponent:1.0].CGColor, (id)[[UIColor whiteColor] colorWithAlphaComponent:0.0].CGColor, nil]];
+    [self setGradientForView:self.bottomGradientView colors:[NSArray arrayWithObjects:(id)[[UIColor whiteColor] colorWithAlphaComponent:0.0].CGColor, (id) [[UIColor blackColor] colorWithAlphaComponent:1.0].CGColor, nil]];
+    self.topGradientView.alpha = 0.8f;
+    self.bottomGradientView.alpha = 0.8f;
+    
+    [self startDurationTimer];
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [self.callDurationTimer invalidate];
 }
 
 #pragma mark - Public
@@ -98,13 +119,107 @@ NSString *const CLOSED = @"CLOSED";
 }
 
 - (IBAction)videoButtonPressed:(id)sender {
-    if(self.localVideoTrack){
-        self.localVideoTrack.enabled = !self.localVideoTrack.isEnabled;
-        [self.videoButton setSelected: !self.localVideoTrack.isEnabled];
+    [self toggleVideoTrackOn:!self.localVideoTrack.isEnabled];
+}
+
+- (IBAction) toggleControlsVisibility:(id)sender {
+    CGFloat alpha = 1.0f;
+    CGFloat gradientAlpha = 0.8f;
+    if (self.callTitleLabel.alpha == 1.0f) {
+        alpha = 0.0f;
+        gradientAlpha = 0.0f;
     }
+    
+    [UIView animateWithDuration:0.450 animations:^{
+        self.callTitleLabel.alpha = alpha;
+        self.callDurationLabel.alpha = alpha;
+        self.callTimeLabel.alpha = alpha;
+        self.disconnectButton.alpha = alpha;
+        self.micButton.alpha = alpha;
+        self.videoButton.alpha = alpha;
+    
+        self.topGradientView.alpha = gradientAlpha;
+        self.bottomGradientView.alpha = gradientAlpha;
+    }];
+}
+
+- (IBAction)bannerButton1Pressed:(id)sender {
+    [self toggleBanner:NO];
+    [self toggleVideoTrackOn:NO];
+}
+
+
+- (IBAction)bannerButton2Pressed:(id)sender {
+    [self toggleBanner:NO];
+    [self.room disconnect];
+    [self doConnect];
+}
+
+- (IBAction)swipeUpOnBanner:(id)sender {
+    [self toggleBanner:NO];
 }
 
 #pragma mark - Private
+
+- (void) setShadowForView:(UIView*)view {
+    view.layer.shadowColor = [UIColor blackColor].CGColor;
+    view.layer.shadowOpacity = 0.5f;
+    view.layer.shadowRadius = 4.0f;
+    view.layer.shadowOffset = CGSizeMake(0, 2);
+}
+
+- (void) setGradientForView:(UIView*)view colors:(NSArray*)colors {
+    CAGradientLayer* gradientLayer = [CAGradientLayer layer];
+    gradientLayer.frame = view.bounds;
+    gradientLayer.colors = colors;
+    [view.layer addSublayer: gradientLayer];
+}
+
+- (void) startDurationTimer {
+    self.currentCallDuration = self.config.startCallTimeInSeconds;
+    self.callDurationTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:YES block:^(NSTimer * _Nonnull timer) {
+        int minutes = self.currentCallDuration / 60;
+        int seconds = self.currentCallDuration - minutes * 60.0;
+        NSString *durationText = [NSString stringWithFormat:@"%02d:%02d", minutes, seconds];
+        self.callTimeLabel.text = durationText;
+        
+        self.currentCallDuration++;
+    }];
+}
+
+- (void) toggleBanner:(BOOL)show {
+    if (show) {
+        if (self.lastBannerInteractionDate != nil) {
+            NSTimeInterval timeSinceLastInteraction = -[self.lastBannerInteractionDate timeIntervalSinceNow];
+            if (timeSinceLastInteraction < self.config.ignoreNQBannerInSeconds) {
+                return; // skip this show
+            }
+        }
+    } else {
+        // Hiding the banner, so mark the time so we can ignore next banner show
+        self.lastBannerInteractionDate = [NSDate date];
+    }
+    
+    if (show) {
+        self.bannerBottomConstraint.constant = -80;
+        self.previewTopConstraint.constant = 94;
+        self.callTitleTopConstraint.constant = 94;
+    } else {
+        self.bannerBottomConstraint.constant = 80;
+        self.previewTopConstraint.constant = 20;
+        self.callTitleTopConstraint.constant = 20;
+    }
+    [UIView animateWithDuration:0.35 animations:^{
+        [self.view layoutIfNeeded];
+    }];
+}
+
+- (void) toggleVideoTrackOn:(BOOL)on {
+    if(self.localVideoTrack){
+        self.localVideoTrack.enabled = on;
+        [self.videoButton setSelected: !on];
+    }
+}
 
 - (BOOL)isSimulator {
 #if TARGET_IPHONE_SIMULATOR
@@ -116,15 +231,18 @@ NSString *const CLOSED = @"CLOSED";
 - (void)startPreview {
     // TVICameraCapturer is not supported with the Simulator.
     if ([self isSimulator]) {
-        [self.previewView removeFromSuperview];
+        [self logMessage:@"Preview view does not work in Simulator"];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.previewView removeFromSuperview];
+        });
         return;
     }
     
-    self.camera = [[TVICameraCapturer alloc] initWithSource:TVICameraCaptureSourceFrontCamera delegate:self];
-    self.localVideoTrack = [TVILocalVideoTrack trackWithCapturer:self.camera
-                                                         enabled:YES
-                                                     constraints:nil
-                                                            name:@"Camera"];
+    self.cameraSource = [[TVICameraSource alloc] initWithDelegate:nil];
+    self.frontCamera = [TVICameraSource captureDeviceForPosition:AVCaptureDevicePositionFront];
+    self.backCamera = [TVICameraSource captureDeviceForPosition:AVCaptureDevicePositionBack];
+    
+    self.localVideoTrack = [TVILocalVideoTrack trackWithSource:self.cameraSource enabled:YES name:@"Camera"];
     if (!self.localVideoTrack) {
         [self logMessage:@"Failed to add video track"];
     } else {
@@ -140,13 +258,21 @@ NSString *const CLOSED = @"CLOSED";
         self.cameraSwitchButton.hidden = NO;
         [self.previewView addGestureRecognizer:tap];
     }
+    
+    [self.cameraSource startCaptureWithDevice:self.frontCamera completion:^(AVCaptureDevice * _Nonnull device, TVIVideoFormat * _Nonnull format, NSError * _Nullable error) {
+        [self cameraCaptureDidStartWithDevice:device];
+    }];
 }
 
 - (void)flipCamera {
-    if (self.camera.source == TVICameraCaptureSourceFrontCamera) {
-        [self.camera selectSource:TVICameraCaptureSourceBackCameraWide];
+    if (self.cameraSource.device == self.frontCamera) {
+        [self.cameraSource selectCaptureDevice:self.backCamera completion:^(AVCaptureDevice * _Nonnull device, TVIVideoFormat * _Nonnull format, NSError * _Nullable error) {
+            [self cameraCaptureDidStartWithDevice:device];
+        }];
     } else {
-        [self.camera selectSource:TVICameraCaptureSourceFrontCamera];
+        [self.cameraSource selectCaptureDevice:self.frontCamera completion:^(AVCaptureDevice * _Nonnull device, TVIVideoFormat * _Nonnull format, NSError * _Nullable error) {
+            [self cameraCaptureDidStartWithDevice:device];
+        }];
     }
 }
 
@@ -182,14 +308,15 @@ NSString *const CLOSED = @"CLOSED";
     
     TVIConnectOptions *connectOptions = [TVIConnectOptions optionsWithToken:self.accessToken
                                                                       block:^(TVIConnectOptionsBuilder * _Nonnull builder) {
-                                                                          builder.roomName = self.roomName;
-                                                                          // Use the local media that we prepared earlier.
-                                                                          builder.audioTracks = self.localAudioTrack ? @[ self.localAudioTrack ] : @[ ];
-                                                                          builder.videoTracks = self.localVideoTrack ? @[ self.localVideoTrack ] : @[ ];
-                                                                      }];
+        builder.roomName = self.roomName;
+        // Use the local media that we prepared earlier.
+        builder.audioTracks = self.localAudioTrack ? @[ self.localAudioTrack ] : @[ ];
+        builder.videoTracks = self.localVideoTrack ? @[ self.localVideoTrack ] : @[ ];
+        [builder setNetworkQualityEnabled:YES];
+    }];
     
     // Connect to the Room using the options we provided.
-    self.room = [TwilioVideo connectWithOptions:connectOptions delegate:self];
+    self.room = [TwilioVideoSDK connectWithOptions:connectOptions delegate:self];
     
     [self logMessage:@"Attempting to connect to room"];
 }
@@ -286,8 +413,22 @@ NSString *const CLOSED = @"CLOSED";
 }
 
 - (void) dismiss {
+    [self.cameraSource stopCapture];
     [[TwilioVideoManager getInstance] publishEvent: CLOSED];
     [self dismissViewControllerAnimated:NO completion:nil];
+}
+
+- (void) updatePreviewViewHeightTo:(CGFloat) height {
+    // LR: Since TVIVideoView gets replaces with another view, we need
+    // to search for the constraints, instead of having a IBOutlet to the
+    // constraint we want in the .storyboard
+    for (NSLayoutConstraint *constraint in self.previewView.constraints) {
+        if (constraint.firstAttribute == NSLayoutAttributeHeight) {
+            constraint.constant = roundf(height);
+            [self.previewView layoutIfNeeded];
+            return;
+        }
+    }
 }
 
 #pragma mark - TVIRoomDelegate
@@ -301,6 +442,7 @@ NSString *const CLOSED = @"CLOSED";
 #pragma mark - TVIRoomDelegate
 
 - (void)didConnectToRoom:(TVIRoom *)room {
+    room.localParticipant.delegate = self;
     // At the moment, this example only supports rendering one Participant at a time.
     [self logMessage:[NSString stringWithFormat:@"Connected to room %@ as %@", room.name, room.localParticipant.identity]];
     [[TwilioVideoManager getInstance] publishEvent: CONNECTED];
@@ -498,10 +640,22 @@ NSString *const CLOSED = @"CLOSED";
     [self.view setNeedsLayout];
 }
 
-#pragma mark - TVICameraCapturerDelegate
+- (void) cameraCaptureDidStartWithDevice:(AVCaptureDevice*)device {
+    self.previewView.mirror = (device == self.frontCamera);
+    CMVideoDimensions dimensions = CMVideoFormatDescriptionGetDimensions(device.activeFormat.formatDescription);
+    CGFloat previewHeight = self.previewView.frame.size.width * dimensions.width / dimensions.height;
+    [self updatePreviewViewHeightTo: previewHeight];
+}
 
-- (void)cameraCapturer:(TVICameraCapturer *)capturer didStartWithSource:(TVICameraCaptureSource)source {
-    self.previewView.mirror = (source == TVICameraCaptureSourceFrontCamera);
+#pragma mark - TVILocalParticipantDelegate
+
+- (void)localParticipant:(nonnull TVILocalParticipant *)participant networkQualityLevelDidChange:(TVINetworkQualityLevel)networkQualityLevel {
+    // networkQuality will always be 0 while reconnecting, so skip
+    if (self.room.state == TVIRoomStateReconnecting) return;
+    [self logMessage:[NSString stringWithFormat:@"Network quality: %ld", (long)networkQualityLevel]];
+    if (!self.config.disableNQBanner && networkQualityLevel <= self.config.videoNetworkQualityThreshold) {
+        [self toggleBanner:YES];
+    }
 }
 
 @end
