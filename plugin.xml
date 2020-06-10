@@ -49,6 +49,7 @@
         <resource-file src="src/ios/Resources/MarkPro-Book.ttf" target="Resources/MarkPro-Book.ttf" />
         <resource-file src="src/ios/Resources/MarkPro-Normal.ttf" target="Resources/MarkPro-Normal.ttf" />
 
+        <framework src="TwilioVideo" type="podspec" spec="3.3.0" />
         <podspec>
             <config>
                 <source url="https://cdn.cocoapods.org/" />
