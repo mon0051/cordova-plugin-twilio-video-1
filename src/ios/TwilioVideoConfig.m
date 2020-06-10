@@ -5,28 +5,57 @@
 #define i18n_CONNECTION_ERROR_PROP          @"i18nConnectionError"
 #define i18n_DISCONNECTED_WITH_ERROR_PROP   @"i18nDisconnectedWithError"
 #define i18n_ACCEPT_PROP                    @"i18nAccept"
+#define i18n_CALL_TITLE_PROP                @"i18nCallTitle"
+#define i18n_CALL_DURATION_PROP             @"i18nCallDuration"
 #define HANDLE_ERROR_IN_APP                 @"handleErrorInApp"
 #define HANG_UP_IN_APP                      @"hangUpInApp"
+#define START_CALL_TIME                     @"startCallTimeInSeconds"
+#define VIDEO_NQ_THRESHOLD                  @"videoNetworkQualityThreshold"
+#define IGNORE_NQ_BANNER                    @"ignoreNQBannerInSeconds"
+#define DISABLE_NQ_BANNER                   @"disableNQBanner"
 
 @implementation TwilioVideoConfig
+
++ (instancetype)configFromDict:(NSDictionary *)dict {
+    TwilioVideoConfig *config = [[TwilioVideoConfig alloc] init];
+    [config parse:dict];
+    return config;
+}
+
 -(void) parse:(NSDictionary*)config {
-    if (config == NULL || config == (id)[NSNull null]) { return; }
-    self.primaryColorHex = [config objectForKey:PRIMARY_COLOR_PROP];
-    self.secondaryColorHex = [config objectForKey:SECONDARY_COLOR_PROP];
-    self.i18nConnectionError = [config objectForKey:i18n_CONNECTION_ERROR_PROP];
-    if (self.i18nConnectionError == NULL) {
-        self.i18nConnectionError = @"It was not possible to join the room";
+    self.primaryColorHex = [self stringInConfig:config forKey:PRIMARY_COLOR_PROP defaultValue:nil];
+    self.secondaryColorHex = [self stringInConfig:config forKey:SECONDARY_COLOR_PROP defaultValue:nil];
+    self.i18nConnectionError = [self stringInConfig:config forKey:i18n_CONNECTION_ERROR_PROP defaultValue:@"It was not possible to join the room"];
+    self.i18nDisconnectedWithError = [self stringInConfig:config forKey:i18n_DISCONNECTED_WITH_ERROR_PROP defaultValue:@"Disconnected"];
+    self.i18nAccept = [self stringInConfig:config forKey:i18n_ACCEPT_PROP defaultValue:@"Accept"];
+    self.i18nCallTitle = [self stringInConfig:config forKey:i18n_CALL_TITLE_PROP defaultValue:@"Set Duration"];
+    self.i18nCallDuration = [self stringInConfig:config forKey:i18n_CALL_DURATION_PROP defaultValue:@"00:15 min"];
+    self.handleErrorInApp = [[self numberInConfig:config forKey:HANDLE_ERROR_IN_APP defaultValue:[NSNumber numberWithBool:NO]] boolValue];
+    self.hangUpInApp = [[self numberInConfig:config forKey:HANG_UP_IN_APP defaultValue:[NSNumber numberWithBool:NO]] boolValue];
+    self.startCallTimeInSeconds = [[self numberInConfig:config forKey:START_CALL_TIME defaultValue:[NSNumber numberWithInt:0]] intValue];
+    self.videoNetworkQualityThreshold = [[self numberInConfig:config forKey:VIDEO_NQ_THRESHOLD defaultValue:[NSNumber numberWithInt:1]] intValue];
+    self.ignoreNQBannerInSeconds = [[self numberInConfig:config forKey:IGNORE_NQ_BANNER defaultValue:[NSNumber numberWithDouble:30.0]] doubleValue];
+    self.disableNQBanner = [[self numberInConfig:config forKey:DISABLE_NQ_BANNER defaultValue:[NSNumber numberWithBool:NO]] boolValue];
+}
+
+- (NSString*) stringInConfig:(NSDictionary*)config forKey:(NSString*)key defaultValue:(NSString*)defaultValue {
+    if (config == nil || config == (id)[NSNull null]) return defaultValue;
+    NSString* value = [config objectForKey:key];
+    if (value == nil) {
+        return defaultValue;
+    } else {
+        return value;
     }
-    self.i18nDisconnectedWithError = [config objectForKey:i18n_DISCONNECTED_WITH_ERROR_PROP];
-    if (self.i18nDisconnectedWithError == NULL) {
-        self.i18nDisconnectedWithError = @"Disconnected";
+}
+
+- (NSNumber*) numberInConfig:(NSDictionary*)config forKey:(NSString*)key defaultValue:(NSNumber*)defaultValue {
+    if (config == nil || config == (id)[NSNull null]) return defaultValue;
+    NSNumber* value = [config objectForKey:key];
+    if (value == nil) {
+        return defaultValue;
+    } else {
+        return value;
     }
-    self.i18nAccept = [config objectForKey:i18n_ACCEPT_PROP];
-    if (self.i18nAccept == NULL) {
-        self.i18nAccept = @"Accept";
-    }
-    self.handleErrorInApp = [config objectForKey:HANDLE_ERROR_IN_APP];
-    self.hangUpInApp = [config objectForKey:HANG_UP_IN_APP];
 }
 
 + (UIColor *)colorFromHexString:(NSString *)hexString {

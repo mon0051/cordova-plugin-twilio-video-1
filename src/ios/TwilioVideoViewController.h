@@ -4,7 +4,7 @@
 #import "TwilioVideoConfig.h"
 #import "TwilioVideoPermissions.h"
 
-@interface TwilioVideoViewController: UIViewController <TVIRemoteParticipantDelegate, TVIRoomDelegate, TVIVideoViewDelegate, TVICameraCapturerDelegate, TwilioVideoActionProducerDelegate>
+@interface TwilioVideoViewController: UIViewController <TVIRemoteParticipantDelegate, TVIRoomDelegate, TVIVideoViewDelegate, TwilioVideoActionProducerDelegate, TVILocalParticipantDelegate>
 
 // Configure access token manually for testing in `ViewDidLoad`, if desired! Create one manually in the console.
 @property (nonatomic, strong) NSString *roomName;
@@ -13,7 +13,9 @@
 
 #pragma mark Video SDK components
 
-@property (nonatomic, strong) TVICameraCapturer *camera;
+@property (nonatomic, strong) TVICameraSource *cameraSource;
+@property (nonatomic, strong) AVCaptureDevice *frontCamera;
+@property (nonatomic, strong) AVCaptureDevice *backCamera;
 @property (nonatomic, strong) TVILocalVideoTrack *localVideoTrack;
 @property (nonatomic, strong) TVILocalAudioTrack *localAudioTrack;
 @property (nonatomic, strong) TVIRemoteParticipant *remoteParticipant;
@@ -31,6 +33,20 @@
 @property (nonatomic, weak) IBOutlet UILabel *roomLine;
 @property (nonatomic, weak) IBOutlet UIButton *cameraSwitchButton;
 @property (nonatomic, weak) IBOutlet UIButton *videoButton;
+@property (nonatomic, weak) IBOutlet UIView *topGradientView;
+@property (nonatomic, weak) IBOutlet UIView *bottomGradientView;
+@property (nonatomic, weak) IBOutlet UILabel *callTimeLabel;
+@property (nonatomic, weak) IBOutlet UILabel *callTitleLabel;
+@property (nonatomic, weak) IBOutlet UILabel *callDurationLabel;
+@property (nonatomic, weak) IBOutlet UIView *bannerView;
+
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint *bannerBottomConstraint;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint *callTitleTopConstraint;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint *previewTopConstraint;
+
+@property (nonatomic, strong) NSTimer *callDurationTimer;
+@property (nonatomic) int currentCallDuration;
+@property (nonatomic, strong) NSDate *lastBannerInteractionDate;
 
 - (void)connectToRoom:(NSString*)room token: (NSString *)token;
 
