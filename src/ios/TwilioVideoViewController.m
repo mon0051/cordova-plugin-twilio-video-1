@@ -83,6 +83,12 @@ NSString *const CLOSED = @"CLOSED";
     [self.callDurationTimer invalidate];
 }
 
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    self.topGradientView.layer.sublayers[0].frame = self.topGradientView.bounds;
+    self.bottomGradientView.layer.sublayers[0].frame = self.bottomGradientView.bounds;
+}
+
 #pragma mark - Public
 
 - (void)connectToRoom:(NSString*)room token:(NSString *)token {

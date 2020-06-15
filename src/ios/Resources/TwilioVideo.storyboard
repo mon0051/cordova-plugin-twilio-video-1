@@ -27,11 +27,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bab-gz-Vdx" userLabel="BottomGradientView">
-                                <rect key="frame" x="0.0" y="668" width="414" height="228"/>
+                            <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bab-gz-Vdx" userLabel="BottomGradientView">
+                                <rect key="frame" x="0.0" y="668" width="414" height="268"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4jH-x8-QdV" userLabel="I">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4jH-x8-QdV" userLabel="TopGradientView">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="127"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
@@ -200,7 +200,7 @@
                             <constraint firstItem="7bK-Tc-zw5" firstAttribute="leading" secondItem="krA-sT-Z3g" secondAttribute="trailing" constant="30" id="u41-jb-y3P"/>
                             <constraint firstItem="4jH-x8-QdV" firstAttribute="top" secondItem="3Bh-pO-6uY" secondAttribute="top" id="yLV-2P-qSP"/>
                             <constraint firstItem="krA-sT-Z3g" firstAttribute="leading" secondItem="rwp-9E-VzS" secondAttribute="trailing" constant="30" id="yfX-ed-tbl"/>
-                            <constraint firstAttribute="bottom" secondItem="bab-gz-Vdx" secondAttribute="bottom" id="yfq-bQ-fdq"/>
+                            <constraint firstAttribute="bottom" secondItem="bab-gz-Vdx" secondAttribute="bottom" constant="-40" id="yfq-bQ-fdq"/>
                         </constraints>
                         <connections>
                             <outletCollection property="gestureRecognizers" destination="yKo-cn-ybv" appends="YES" id="6Fd-q3-CHE"/>
