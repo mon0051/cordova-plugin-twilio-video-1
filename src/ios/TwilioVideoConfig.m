@@ -7,6 +7,8 @@
 #define i18n_ACCEPT_PROP                    @"i18nAccept"
 #define i18n_CALL_TITLE_PROP                @"i18nCallTitle"
 #define i18n_CALL_DURATION_PROP             @"i18nCallDuration"
+#define i18n_NQ_BANNER_TEXT                @"i18nNetworkQualityBannerText"
+#define i18n_NQ_BANNER_BUTTON               @"i18nNetworkQualityBannerButton"
 #define HANDLE_ERROR_IN_APP                 @"handleErrorInApp"
 #define HANG_UP_IN_APP                      @"hangUpInApp"
 #define START_CALL_TIME                     @"startCallTimeInSeconds"
@@ -30,6 +32,8 @@
     self.i18nAccept = [self stringInConfig:config forKey:i18n_ACCEPT_PROP defaultValue:@"Accept"];
     self.i18nCallTitle = [self stringInConfig:config forKey:i18n_CALL_TITLE_PROP defaultValue:@"Set Duration"];
     self.i18nCallDuration = [self stringInConfig:config forKey:i18n_CALL_DURATION_PROP defaultValue:@"00:15 min"];
+    self.i18nNetworkQualityBannerText = [self stringInConfig:config forKey:i18n_NQ_BANNER_TEXT defaultValue:@"Your network connection is poor"];
+    self.i18nNetworkQualityBannerButton = [self stringInConfig:config forKey:i18n_NQ_BANNER_BUTTON defaultValue:@"Voice only"];
     self.handleErrorInApp = [[self numberInConfig:config forKey:HANDLE_ERROR_IN_APP defaultValue:[NSNumber numberWithBool:NO]] boolValue];
     self.hangUpInApp = [[self numberInConfig:config forKey:HANG_UP_IN_APP defaultValue:[NSNumber numberWithBool:NO]] boolValue];
     self.startCallTimeInSeconds = [[self numberInConfig:config forKey:START_CALL_TIME defaultValue:[NSNumber numberWithInt:0]] intValue];

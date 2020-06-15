@@ -8,6 +8,8 @@
 @property NSString *i18nAccept;
 @property NSString *i18nCallTitle;
 @property NSString *i18nCallDuration;
+@property NSString *i18nNetworkQualityBannerText;
+@property NSString *i18nNetworkQualityBannerButton;
 @property BOOL handleErrorInApp;
 @property BOOL hangUpInApp;
 @property int startCallTimeInSeconds;

@@ -65,6 +65,10 @@ NSString *const CLOSED = @"CLOSED";
     [self setShadowForView:self.callTitleLabel];
     [self setShadowForView:self.bannerView];
     self.bannerView.layer.cornerRadius = 8.0f;
+    self.bannerTitleLabel.text = self.config.i18nNetworkQualityBannerText;
+    [self.bannerButton setTitle:self.config.i18nNetworkQualityBannerButton forState:UIControlStateNormal];
+    [self.bannerButton setTitle:self.config.i18nNetworkQualityBannerButton forState:UIControlStateHighlighted];
+    [self.bannerButton setTitle:self.config.i18nNetworkQualityBannerButton forState:UIControlStateSelected];
 
     [self setGradientForView:self.topGradientView colors:[NSArray arrayWithObjects: (id) [[UIColor blackColor] colorWithAlphaComponent:1.0].CGColor, (id)[[UIColor whiteColor] colorWithAlphaComponent:0.0].CGColor, nil]];
     [self setGradientForView:self.bottomGradientView colors:[NSArray arrayWithObjects:(id)[[UIColor whiteColor] colorWithAlphaComponent:0.0].CGColor, (id) [[UIColor blackColor] colorWithAlphaComponent:1.0].CGColor, nil]];

@@ -1,5 +1,5 @@
-@import TwilioVideo;
 @import UIKit;
+@import TwilioVideo;
 #import "TwilioVideoManager.h"
 #import "TwilioVideoConfig.h"
 #import "TwilioVideoPermissions.h"
@@ -39,6 +39,8 @@
 @property (nonatomic, weak) IBOutlet UILabel *callTitleLabel;
 @property (nonatomic, weak) IBOutlet UILabel *callDurationLabel;
 @property (nonatomic, weak) IBOutlet UIView *bannerView;
+@property (weak, nonatomic) IBOutlet UILabel *bannerTitleLabel;
+@property (weak, nonatomic) IBOutlet UIButton *bannerButton;
 
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint *bannerBottomConstraint;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint *callTitleTopConstraint;
