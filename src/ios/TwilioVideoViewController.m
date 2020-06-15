@@ -65,6 +65,10 @@ NSString *const CLOSED = @"CLOSED";
     [self setShadowForView:self.callTitleLabel];
     [self setShadowForView:self.bannerView];
     self.bannerView.layer.cornerRadius = 8.0f;
+    self.bannerTitleLabel.text = self.config.i18nNetworkQualityBannerText;
+    [self.bannerButton setTitle:self.config.i18nNetworkQualityBannerButton forState:UIControlStateNormal];
+    [self.bannerButton setTitle:self.config.i18nNetworkQualityBannerButton forState:UIControlStateHighlighted];
+    [self.bannerButton setTitle:self.config.i18nNetworkQualityBannerButton forState:UIControlStateSelected];
 
     [self setGradientForView:self.topGradientView colors:[NSArray arrayWithObjects: (id) [[UIColor blackColor] colorWithAlphaComponent:1.0].CGColor, (id)[[UIColor whiteColor] colorWithAlphaComponent:0.0].CGColor, nil]];
     [self setGradientForView:self.bottomGradientView colors:[NSArray arrayWithObjects:(id)[[UIColor whiteColor] colorWithAlphaComponent:0.0].CGColor, (id) [[UIColor blackColor] colorWithAlphaComponent:1.0].CGColor, nil]];
@@ -148,13 +152,6 @@ NSString *const CLOSED = @"CLOSED";
     [self toggleVideoTrackOn:NO];
 }
 
-
-- (IBAction)bannerButton2Pressed:(id)sender {
-    [self toggleBanner:NO];
-    [self.room disconnect];
-    [self doConnect];
-}
-
 - (IBAction)swipeUpOnBanner:(id)sender {
     [self toggleBanner:NO];
 }
@@ -180,7 +177,13 @@ NSString *const CLOSED = @"CLOSED";
     self.callDurationTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:YES block:^(NSTimer * _Nonnull timer) {
         int minutes = self.currentCallDuration / 60;
         int seconds = self.currentCallDuration - minutes * 60.0;
-        NSString *durationText = [NSString stringWithFormat:@"%02d:%02d", minutes, seconds];
+        NSString *format = @"%02d:%02d";
+        if (self.currentCallDuration < 0.0) {
+            seconds = seconds * -1.0;
+            minutes = minutes * -1.0;
+            format = @"-%02d:%02d";
+        }
+        NSString *durationText = [NSString stringWithFormat:format, minutes, seconds];
         self.callTimeLabel.text = durationText;
         
         self.currentCallDuration++;
@@ -188,16 +191,8 @@ NSString *const CLOSED = @"CLOSED";
 }
 
 - (void) toggleBanner:(BOOL)show {
-    if (show) {
-        if (self.lastBannerInteractionDate != nil) {
-            NSTimeInterval timeSinceLastInteraction = -[self.lastBannerInteractionDate timeIntervalSinceNow];
-            if (timeSinceLastInteraction < self.config.ignoreNQBannerInSeconds) {
-                return; // skip this show
-            }
-        }
-    } else {
-        // Hiding the banner, so mark the time so we can ignore next banner show
-        self.lastBannerInteractionDate = [NSDate date];
+    if ([self shouldIgnoreBannerShow: show]) {
+        return;
     }
     
     if (show) {
@@ -218,6 +213,28 @@ NSString *const CLOSED = @"CLOSED";
     if(self.localVideoTrack){
         self.localVideoTrack.enabled = on;
         [self.videoButton setSelected: !on];
+    }
+}
+
+- (BOOL) shouldIgnoreBannerShow:(BOOL) isShowingBanner {
+    if (isShowingBanner) {
+        // check if we are still inside the ignore timer
+        if (self.lastBannerInteractionDate != nil) {
+            NSTimeInterval timeSinceLastInteraction = -[self.lastBannerInteractionDate timeIntervalSinceNow];
+            if (timeSinceLastInteraction < self.config.ignoreNQBannerInSeconds) {
+                return true;
+            }
+        }
+        
+        if (!self.localVideoTrack.enabled) {
+            return true;
+        }
+        
+        return false;
+    } else {
+        // Hiding the banner, so mark the time so we can ignore next banner show
+        self.lastBannerInteractionDate = [NSDate date];
+        return false;
     }
 }
 
@@ -502,7 +519,7 @@ NSString *const CLOSED = @"CLOSED";
 #pragma mark - TVIRemoteParticipantDelegate
 
 - (void)remoteParticipant:(TVIRemoteParticipant *)participant
-      publishedVideoTrack:(TVIRemoteVideoTrackPublication *)publication {
+      didPublishVideoTrack:(TVIRemoteVideoTrackPublication *)publication {
     
     // Remote Participant has offered to share the video Track.
     
@@ -511,7 +528,7 @@ NSString *const CLOSED = @"CLOSED";
 }
 
 - (void)remoteParticipant:(TVIRemoteParticipant *)participant
-    unpublishedVideoTrack:(TVIRemoteVideoTrackPublication *)publication {
+    didUnpublishVideoTrack:(TVIRemoteVideoTrackPublication *)publication {
     
     // Remote Participant has stopped sharing the video Track.
     
@@ -520,7 +537,7 @@ NSString *const CLOSED = @"CLOSED";
 }
 
 - (void)remoteParticipant:(TVIRemoteParticipant *)participant
-      publishedAudioTrack:(TVIRemoteAudioTrackPublication *)publication {
+      didPublishAudioTrack:(TVIRemoteAudioTrackPublication *)publication {
     
     // Remote Participant has offered to share the audio Track.
     
@@ -529,7 +546,7 @@ NSString *const CLOSED = @"CLOSED";
 }
 
 - (void)remoteParticipant:(TVIRemoteParticipant *)participant
-    unpublishedAudioTrack:(TVIRemoteAudioTrackPublication *)publication {
+    didUnpublishAudioTrack:(TVIRemoteAudioTrackPublication *)publication {
     
     // Remote Participant has stopped sharing the audio Track.
     
@@ -537,7 +554,7 @@ NSString *const CLOSED = @"CLOSED";
                       participant.identity, publication.trackName]];
 }
 
-- (void)subscribedToVideoTrack:(TVIRemoteVideoTrack *)videoTrack
+- (void)didSubscribeToVideoTrack:(TVIRemoteVideoTrack *)videoTrack
                    publication:(TVIRemoteVideoTrackPublication *)publication
                 forParticipant:(TVIRemoteParticipant *)participant {
     
@@ -554,7 +571,7 @@ NSString *const CLOSED = @"CLOSED";
     }
 }
 
-- (void)unsubscribedFromVideoTrack:(TVIRemoteVideoTrack *)videoTrack
+- (void)didUnsubscribeFromVideoTrack:(TVIRemoteVideoTrack *)videoTrack
                        publication:(TVIRemoteVideoTrackPublication *)publication
                     forParticipant:(TVIRemoteParticipant *)participant {
     
@@ -571,7 +588,7 @@ NSString *const CLOSED = @"CLOSED";
     }
 }
 
-- (void)subscribedToAudioTrack:(TVIRemoteAudioTrack *)audioTrack
+- (void)didSubscribeToAudioTrack:(TVIRemoteAudioTrack *)audioTrack
                    publication:(TVIRemoteAudioTrackPublication *)publication
                 forParticipant:(TVIRemoteParticipant *)participant {
     
@@ -583,7 +600,7 @@ NSString *const CLOSED = @"CLOSED";
     [[TwilioVideoManager getInstance] publishEvent: AUDIO_TRACK_ADDED];
 }
 
-- (void)unsubscribedFromAudioTrack:(TVIRemoteAudioTrack *)audioTrack
+- (void)didUnsubscribeFromAudioTrack:(TVIRemoteAudioTrack *)audioTrack
                        publication:(TVIRemoteAudioTrackPublication *)publication
                     forParticipant:(TVIRemoteParticipant *)participant {
     
@@ -596,37 +613,37 @@ NSString *const CLOSED = @"CLOSED";
 }
 
 - (void)remoteParticipant:(TVIRemoteParticipant *)participant
-        enabledVideoTrack:(TVIRemoteVideoTrackPublication *)publication {
+        didEnableVideoTrack:(TVIRemoteVideoTrackPublication *)publication {
     [self logMessage:[NSString stringWithFormat:@"Participant %@ enabled %@ video track.",
                       participant.identity, publication.trackName]];
 }
 
 - (void)remoteParticipant:(TVIRemoteParticipant *)participant
-       disabledVideoTrack:(TVIRemoteVideoTrackPublication *)publication {
+       didDisableVideoTrack:(TVIRemoteVideoTrackPublication *)publication {
     [self logMessage:[NSString stringWithFormat:@"Participant %@ disabled %@ video track.",
                       participant.identity, publication.trackName]];
 }
 
 - (void)remoteParticipant:(TVIRemoteParticipant *)participant
-        enabledAudioTrack:(TVIRemoteAudioTrackPublication *)publication {
+        didEnableAudioTrack:(TVIRemoteAudioTrackPublication *)publication {
     [self logMessage:[NSString stringWithFormat:@"Participant %@ enabled %@ audio track.",
                       participant.identity, publication.trackName]];
 }
 
 - (void)remoteParticipant:(TVIRemoteParticipant *)participant
-       disabledAudioTrack:(TVIRemoteAudioTrackPublication *)publication {
+       didDisableAudioTrack:(TVIRemoteAudioTrackPublication *)publication {
     [self logMessage:[NSString stringWithFormat:@"Participant %@ disabled %@ audio track.",
                       participant.identity, publication.trackName]];
 }
 
-- (void)failedToSubscribeToAudioTrack:(TVIRemoteAudioTrackPublication *)publication
+- (void)didFailToSubscribeToAudioTrack:(TVIRemoteAudioTrackPublication *)publication
                                 error:(NSError *)error
                        forParticipant:(TVIRemoteParticipant *)participant {
     [self logMessage:[NSString stringWithFormat:@"Participant %@ failed to subscribe to %@ audio track.",
                       participant.identity, publication.trackName]];
 }
 
-- (void)failedToSubscribeToVideoTrack:(TVIRemoteVideoTrackPublication *)publication
+- (void)didFailToSubscribeToVideoTrack:(TVIRemoteVideoTrackPublication *)publication
                                 error:(NSError *)error
                        forParticipant:(TVIRemoteParticipant *)participant {
     [self logMessage:[NSString stringWithFormat:@"Participant %@ failed to subscribe to %@ video track.",
