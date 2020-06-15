@@ -177,7 +177,13 @@ NSString *const CLOSED = @"CLOSED";
     self.callDurationTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:YES block:^(NSTimer * _Nonnull timer) {
         int minutes = self.currentCallDuration / 60;
         int seconds = self.currentCallDuration - minutes * 60.0;
-        NSString *durationText = [NSString stringWithFormat:@"%02d:%02d", minutes, seconds];
+        NSString *format = @"%02d:%02d";
+        if (self.currentCallDuration < 0.0) {
+            seconds = seconds * -1.0;
+            minutes = minutes * -1.0;
+            format = @"-%02d:%02d";
+        }
+        NSString *durationText = [NSString stringWithFormat:format, minutes, seconds];
         self.callTimeLabel.text = durationText;
         
         self.currentCallDuration++;
