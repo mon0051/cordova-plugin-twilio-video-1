@@ -31,7 +31,7 @@
                                 <rect key="frame" x="0.0" y="668" width="414" height="228"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4jH-x8-QdV" userLabel="TopGradientView">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4jH-x8-QdV" userLabel="I">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="127"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
@@ -131,17 +131,17 @@
                                 </connections>
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aZr-XQ-0pO" userLabel="BannerView">
-                                <rect key="frame" x="8" y="-101" width="398" height="65"/>
+                                <rect key="frame" x="8" y="-96" width="398" height="60"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="Your network connection is poor" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CRQ-KM-QKn">
-                                        <rect key="frame" x="12" y="12" width="199" height="41"/>
+                                        <rect key="frame" x="12" y="12" width="284" height="36"/>
                                         <fontDescription key="fontDescription" name="MarkPro-Bold" family="Mark Pro" pointSize="16"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                         <size key="shadowOffset" width="0.0" height="0.0"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DIt-bv-Dv4">
-                                        <rect key="frame" x="223" y="10.5" width="78" height="44"/>
+                                        <rect key="frame" x="308" y="8" width="78" height="44"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="44" id="x9U-5J-6ha"/>
                                         </constraints>
@@ -153,28 +153,14 @@
                                             <action selector="bannerButton1Pressed:" destination="jSN-F6-Q4K" eventType="touchUpInside" id="2ls-wv-oZ8"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fwx-ab-J1N">
-                                        <rect key="frame" x="313" y="10.5" width="73" height="44"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="44" id="aRe-js-WyS"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" name="MarkPro-Bold" family="Mark Pro" pointSize="16"/>
-                                        <state key="normal" title="Reconnet">
-                                            <color key="titleColor" red="0.83921568627450982" green="0.21568627450980393" blue="0.3529411764705882" alpha="1" colorSpace="calibratedRGB"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="bannerButton2Pressed:" destination="jSN-F6-Q4K" eventType="touchUpInside" id="kgw-Mm-FKJ"/>
-                                        </connections>
-                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="0.80056117957746475" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="CRQ-KM-QKn" firstAttribute="top" secondItem="aZr-XQ-0pO" secondAttribute="top" constant="12" id="3wx-Mb-5os"/>
-                                    <constraint firstAttribute="trailing" secondItem="Fwx-ab-J1N" secondAttribute="trailing" constant="12" id="82c-qk-7a7"/>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="60" id="FE2-sS-Vaa"/>
                                     <constraint firstItem="DIt-bv-Dv4" firstAttribute="leading" secondItem="CRQ-KM-QKn" secondAttribute="trailing" constant="12" id="NbK-ba-kmW"/>
-                                    <constraint firstItem="Fwx-ab-J1N" firstAttribute="centerY" secondItem="aZr-XQ-0pO" secondAttribute="centerY" id="U3I-m1-m4O"/>
                                     <constraint firstItem="DIt-bv-Dv4" firstAttribute="centerY" secondItem="aZr-XQ-0pO" secondAttribute="centerY" id="US4-aZ-qJh"/>
-                                    <constraint firstItem="Fwx-ab-J1N" firstAttribute="leading" secondItem="DIt-bv-Dv4" secondAttribute="trailing" constant="12" id="dHA-cj-XiX"/>
+                                    <constraint firstAttribute="trailing" secondItem="DIt-bv-Dv4" secondAttribute="trailing" constant="12" id="cbW-AC-eUS"/>
                                     <constraint firstItem="CRQ-KM-QKn" firstAttribute="leading" secondItem="aZr-XQ-0pO" secondAttribute="leading" constant="12" id="lo5-Wh-ggG"/>
                                     <constraint firstAttribute="bottom" secondItem="CRQ-KM-QKn" secondAttribute="bottom" constant="12" id="n6k-vh-bjO"/>
                                 </constraints>
@@ -222,6 +208,8 @@
                     </view>
                     <connections>
                         <outlet property="bannerBottomConstraint" destination="0Pv-Uo-xSm" id="Bh7-zu-B7b"/>
+                        <outlet property="bannerButton" destination="DIt-bv-Dv4" id="zZ3-kC-AZx"/>
+                        <outlet property="bannerTitleLabel" destination="CRQ-KM-QKn" id="u81-Eu-YrX"/>
                         <outlet property="bannerView" destination="aZr-XQ-0pO" id="VjG-tp-b6B"/>
                         <outlet property="bottomGradientView" destination="bab-gz-Vdx" id="jJL-ST-csK"/>
                         <outlet property="callDurationLabel" destination="l4T-lx-dok" id="bQ5-G3-N4k"/>

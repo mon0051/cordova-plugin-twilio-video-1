@@ -148,13 +148,6 @@ NSString *const CLOSED = @"CLOSED";
     [self toggleVideoTrackOn:NO];
 }
 
-
-- (IBAction)bannerButton2Pressed:(id)sender {
-    [self toggleBanner:NO];
-    [self.room disconnect];
-    [self doConnect];
-}
-
 - (IBAction)swipeUpOnBanner:(id)sender {
     [self toggleBanner:NO];
 }
