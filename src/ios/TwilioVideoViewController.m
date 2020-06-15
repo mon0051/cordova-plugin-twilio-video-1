@@ -191,16 +191,8 @@ NSString *const CLOSED = @"CLOSED";
 }
 
 - (void) toggleBanner:(BOOL)show {
-    if (show) {
-        if (self.lastBannerInteractionDate != nil) {
-            NSTimeInterval timeSinceLastInteraction = -[self.lastBannerInteractionDate timeIntervalSinceNow];
-            if (timeSinceLastInteraction < self.config.ignoreNQBannerInSeconds) {
-                return; // skip this show
-            }
-        }
-    } else {
-        // Hiding the banner, so mark the time so we can ignore next banner show
-        self.lastBannerInteractionDate = [NSDate date];
+    if ([self shouldIgnoreBannerShow: show]) {
+        return;
     }
     
     if (show) {
@@ -221,6 +213,28 @@ NSString *const CLOSED = @"CLOSED";
     if(self.localVideoTrack){
         self.localVideoTrack.enabled = on;
         [self.videoButton setSelected: !on];
+    }
+}
+
+- (BOOL) shouldIgnoreBannerShow:(BOOL) isShowingBanner {
+    if (isShowingBanner) {
+        // check if we are still inside the ignore timer
+        if (self.lastBannerInteractionDate != nil) {
+            NSTimeInterval timeSinceLastInteraction = -[self.lastBannerInteractionDate timeIntervalSinceNow];
+            if (timeSinceLastInteraction < self.config.ignoreNQBannerInSeconds) {
+                return true;
+            }
+        }
+        
+        if (!self.localVideoTrack.enabled) {
+            return true;
+        }
+        
+        return false;
+    } else {
+        // Hiding the banner, so mark the time so we can ignore next banner show
+        self.lastBannerInteractionDate = [NSDate date];
+        return false;
     }
 }
 
